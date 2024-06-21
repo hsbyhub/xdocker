@@ -1,0 +1,12 @@
+version: '1'
+services:
+  sshd:
+    image: centos7-sshd
+    container_name: centos7-sshd-dev
+    privileged: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+      - /Users/didi/d:/root/d
+    ports:
+      - "20022:22"
+    command: /usr/sbin/init

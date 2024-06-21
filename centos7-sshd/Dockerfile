@@ -1,22 +1,22 @@
 FROM centos:7
 ENV container docker
 
+WORKDIR /root
+
 # 设置时区
 ENV TZ Asia/Shanghai
 RUN ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime && echo ${TZ} > /etc/timezone
 
-# 安装vim
-RUN yum install -y vim
-ADD .vimrc /root/.vimrc
+# 安装软件
+RUN yum install -y vim wget git gcc gcc-c++ kernel-devel gdb make automake autoconf rsync
 
-# 安装 openssh-server
-RUN yum update -y && yum install -y openssh-server
+# 安装依赖
+RUN git clone https://gitee.com/hsby/xdata
+RUN sh xdata/installtion/nvim-lastest.install.sh v0.9.5
+RUN sh xdata/installtion/node-16.20.2.install.sh
+RUN sh xdata/vim/install.sh
 
-# 配置 SSHD
-RUN ssh-keygen -A && echo 'root:password' | chpasswd
-RUN sed -i 's/#PermitRootLogin yes/PermitRootLogin yes/' /etc/ssh/sshd_config
-
-# 安装 systemd
+# 安装systemd
 RUN yum install -y systemd; yum clean all; \
   (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -vf $i; done); \
   rm -vf /lib/systemd/system/multi-user.target.wants/*; \
@@ -27,10 +27,11 @@ RUN yum install -y systemd; yum clean all; \
   rm -vf /lib/systemd/system/basic.target.wants/*; \
   rm -vf /lib/systemd/system/anaconda.target.wants/*
 
-# 配置 SSHD 服务为启动项
+# 安装openssh-server
+RUN yum update -y && yum install -y openssh-server
+RUN ssh-keygen -A && echo 'root:password' | chpasswd
+RUN sed -i 's/#PermitRootLogin yes/PermitRootLogin yes/' /etc/ssh/sshd_config
 RUN systemctl enable sshd
-
-# 暴露 SSH 服务端口
 EXPOSE 22
 
 # 启动init进程
