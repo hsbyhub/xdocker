@@ -18,6 +18,7 @@ RUN git clone https://gitee.com/hsby/xdata
 RUN sh xdata/installtion/nvim-lastest.install.sh v0.9.5
 RUN sh xdata/installtion/node-16.20.2.install.sh
 RUN sh xdata/vim/install.sh
+# 注意 ~/.local/share/nvim/site/pack/packer/start/nvim-treesitter/lua/nvim-treesitter/shell_command_selectors.lua 需要修改parser编译参数
 
 # 安装systemd
 RUN yum install -y systemd; yum clean all; \
