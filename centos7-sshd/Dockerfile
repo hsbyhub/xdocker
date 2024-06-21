@@ -10,7 +10,10 @@ RUN ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime && echo ${TZ} > /etc/timezon
 # 安装软件
 RUN yum install -y vim wget git gcc gcc-c++ kernel-devel gdb make automake autoconf rsync
 
-# 安装依赖
+# 安装依赖库
+RUN yum install -y cyrus-sasl-devel libuuid-devel openldap-devel zlib-devel boost-devel
+
+# 安装neovim
 RUN git clone https://gitee.com/hsby/xdata
 RUN sh xdata/installtion/nvim-lastest.install.sh v0.9.5
 RUN sh xdata/installtion/node-16.20.2.install.sh
