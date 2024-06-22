@@ -48,6 +48,17 @@ RUN wget https://github.com/clangd/clangd/releases/download/18.1.3/clangd-linux-
     echo '/usr/local/glibc-2.18/lib/ld-2.18.so /usr/local/clangd_18.1.3/bin/clangd' >> /usr/local/bin/clangd &&\
     chmod 755 /usr/local/bin/clangd
 
+# 安装go
+WORKDIR /usr/local/src
+RUN wget https://golang.google.cn/dl/go1.22.4.linux-amd64.tar.gz &&\
+    tar zxvf go1.22.4.linux-amd64.tar.gz -C /usr/local &&\
+    echo 'export GOROOT=/usr/local/go' >> /root/.bashrc &&\
+    echo 'export GOPATH=~/go' >> /root/.bashrc &&\
+    echo 'export PATH=$PATH:$GOROOT/bin' >> /root/.bashrc &&\
+    echo 'export GOSUMDB=off' >> /root/.bashrc &&\
+    echo 'export GO111MODULE=auto' >> /root/.bashrc
+
+
 # 安装systemd
 RUN yum install -y systemd; yum clean all; \
   (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -vf $i; done); \
