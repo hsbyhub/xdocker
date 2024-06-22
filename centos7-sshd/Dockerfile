@@ -25,7 +25,9 @@ RUN git clone https://gitee.com/hsby/xdata &&\
     sh xdata/installtion/nvim-lastest.install.sh v0.9.5 &&\
     sh xdata/installtion/node-16.20.2.install.sh &&\
     sh xdata/installtion/bear-2.4.4.install.sh &&\
-    sh xdata/vim/install.sh
+    sh xdata/vim/install.sh &&\
+    yum-config-manager --add-repo=https://copr.fedorainfracloud.org/coprs/carlwgeorge/ripgrep/repo/epel-7/carlwgeorge-ripgrep-epel-7.repo &&\
+    yum install -y ripgrep
 # 注意 ~/.local/share/nvim/site/pack/packer/start/nvim-treesitter/lua/nvim-treesitter/shell_command_selectors.lua 需要修改compile参数
 
 # 安装glibc
