@@ -1,6 +1,6 @@
 version: '1'
 services:
-  sshd:
+  centos7-dev:
     image: centos7-sshd
     container_name: centos7-sshd-dev
     privileged: true
