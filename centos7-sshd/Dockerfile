@@ -13,51 +13,14 @@ RUN echo "export LANG=zh_CN.UTF-8" >> /etc/locale.conf
 ENV LANG zh_CN.UTF-8
 ENV LC_ALL zh_CN.UTF-8
 
-
-# 安装软件和依赖库
-RUN yum install -y epel-release &&\
-    yum install -y vim wget git gcc gcc-c++ gdb make cmake kernel-devel automake autoconf rsync binutils patchelf zip unzip &&\
-    yum install -y cyrus-sasl-devel libuuid-devel openldap-devel zlib-devel boost-devel
-
-# 安装neovim
+# 初始化系统&安装neovim
 WORKDIR /root
 RUN git clone https://gitee.com/hsby/xdata &&\
+    sh init_centos7.sh &&\
     sh xdata/installtion/nvim-lastest.install.sh v0.9.5 &&\
     sh xdata/installtion/node-16.20.2.install.sh &&\
     sh xdata/installtion/bear-2.4.4.install.sh &&\
-    sh xdata/vim/install.sh &&\
-    yum-config-manager --add-repo=https://copr.fedorainfracloud.org/coprs/carlwgeorge/ripgrep/repo/epel-7/carlwgeorge-ripgrep-epel-7.repo &&\
-    yum install -y ripgrep
-# 注意 ~/.local/share/nvim/site/pack/packer/start/nvim-treesitter/lua/nvim-treesitter/shell_command_selectors.lua 需要修改compile参数
-
-# 安装glibc
-WORKDIR /usr/local/src
-RUN wget https://mirrors.tuna.tsinghua.edu.cn/gnu/glibc/glibc-2.18.tar.gz &&\
-    tar zxvf glibc-2.18.tar.gz &&\
-    mkdir -p glibc-2.18/build
-WORKDIR glibc-2.18/build
-RUN ../configure --prefix=/usr/local/glibc-2.18 &&\
-    make -j8 &&\
-    make install
-
-# 安装clangd && 兼容GLIBC_2.18
-WORKDIR /usr/local/src
-RUN wget https://github.com/clangd/clangd/releases/download/18.1.3/clangd-linux-18.1.3.zip &&\
-    unzip clangd-linux-18.1.3.zip -d /usr/local/ &&\
-    echo '#! /usr/bin/env bash' >> /usr/local/bin/clangd &&\
-    echo '/usr/local/glibc-2.18/lib/ld-2.18.so /usr/local/clangd_18.1.3/bin/clangd' >> /usr/local/bin/clangd &&\
-    chmod 755 /usr/local/bin/clangd
-
-# 安装go
-WORKDIR /usr/local/src
-RUN wget https://golang.google.cn/dl/go1.22.4.linux-amd64.tar.gz &&\
-    tar zxvf go1.22.4.linux-amd64.tar.gz -C /usr/local &&\
-    echo 'export GOROOT=/usr/local/go' >> /root/.bashrc &&\
-    echo 'export GOPATH=~/go' >> /root/.bashrc &&\
-    echo 'export PATH=$PATH:$GOROOT/bin' >> /root/.bashrc &&\
-    echo 'export GOSUMDB=off' >> /root/.bashrc &&\
-    echo 'export GO111MODULE=auto' >> /root/.bashrc
-
+    sh xdata/vim/install.sh
 
 # 安装systemd
 RUN yum install -y systemd; yum clean all; \
